@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Modal display",
   "main": "build/index.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
+    "build": "babel --out-dir build src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,7 +26,9 @@
   },
   "homepage": "https://github.com/Bhoos/rn-modal#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.0",
+    "babel-preset-react-native": "^4.0.0",
     "eslint": "^4.7.2",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
