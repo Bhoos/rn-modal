@@ -28,11 +28,20 @@ class BackDrop extends Component {
     }
   }
 
+  hide = () => {
+    this.container.setNativeProps({
+      pointerEvents: 'none',
+    });
+
+    this.props.hide();
+  }
+
   render() {
-    const { driver, backDropColor, hide, ModalComponent } = this.props;
+    // console.log('Rendering ')
+    const { driver, backDropColor, ModalComponent } = this.props;
     return (
       <TouchableWithoutFeedback onPress={this.onBackDropPressed}>
-        <View style={StyleSheet.absoluteFill}>
+        <View ref={(node) => { this.container = node; }} style={StyleSheet.absoluteFill}>
           { backDropColor &&
             <Animated.View
               style={[StyleSheet.absoluteFill, {
@@ -40,7 +49,7 @@ class BackDrop extends Component {
                 opacity: driver,
               }]}
             /> }
-          <ModalComponent ref={(node) => { this.modal = node; }} closeModal={hide} />
+          <ModalComponent ref={(node) => { this.modal = node; }} hide={this.hide} />
         </View>
       </TouchableWithoutFeedback>
     );
