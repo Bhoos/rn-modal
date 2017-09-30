@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Animated, View } from 'react-native';
+import { Animated, View, StyleSheet } from 'react-native';
 
+import Animate from './Animate';
 import BackDrop from './BackDrop';
 
 let instance = null;
@@ -23,6 +24,7 @@ class Modal extends Component {
   }
 
   async show(ModalComponent, backDropColor, autoHide = true, animation = null) {
+    // console.log('Modal is', ModalComponent);
     // eslint-disable-next-line no-plusplus
     const id = ++uniqueId;
 
@@ -51,25 +53,26 @@ class Modal extends Component {
         return;
       }
 
-      modal.props.animation(modal.props.animation.driver, 0).start(() => {
-        resolve(true);
+      modal.props.animation(modal.props.driver, 0).start(() => {
+        this.setState({
+          modals: this.state.modals.filter(m => m.id !== id),
+        }, () => resolve(true));
       });
     });
   }
 
-  renderModal = ({ id, props, ModalComponent }) => (
-    <BackDrop key={id} {...props} ModalComponent={ModalComponent} hide={() => this.hide(id)} />
+  renderModal = ({ id, props }) => (
+    <BackDrop key={id} {...props} hide={() => this.hide(id)} />
   );
 
   render() {
     const { modals } = this.state;
-
     if (modals.length === 0) {
       return null;
     }
 
     return (
-      <View>
+      <View style={StyleSheet.absoluteFill}>
         { modals.map(this.renderModal) }
       </View>
     );
@@ -77,7 +80,10 @@ class Modal extends Component {
 }
 
 // Use spring animation as default animation
-Modal.defaultAnimation = (value, toValue) => Animated.spring(value, { toValue });
+Modal.defaultAnimation = (value, toValue) => Animated.spring(value, {
+  toValue,
+  useNativeDriver: true,
+});
 
 Modal.show = async (ModalComponent, backDropColor, autoHide = true, animation = null) => {
   if (instance === null) {
@@ -86,5 +92,7 @@ Modal.show = async (ModalComponent, backDropColor, autoHide = true, animation = 
 
   return instance.show(ModalComponent, backDropColor, autoHide, animation);
 };
+
+Modal.Animate = Animate;
 
 export default Modal;
